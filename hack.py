@@ -6,29 +6,47 @@ dest = ''
 jump = ''
 a='111'
 n= '0'
-
+soubor = input()
 # Otevření assem souboru
-f2 = open('assem.hack', 'w')
-f1 = open('assem.asm', 'r')
+
+f2 = open('{}.hack'.format(soubor), 'w')
+f1 = open('{}.asm'.format(soubor), 'r')
 count = 0
 
 while True:
     count += 1
     snumber = f1.readline()
+    if not snumber:
+        break
 
     # A instukce
     if '@' in snumber:
-        a_inst = (snumber[1:])
+        if '@' in snumber:
+            a_inst = (snumber[1:])
+        if '@R' in snumber:
+            a_inst = (snumber[2:])
+        if '@KBD' in snumber:
+            a_inst = ('24576')
+        if '@SCREEN' in snumber:
+            a_inst = ('16384')
+        if '@SP' in snumber:
+            a_inst = ('0')
+        if '@LCL' in snumber:
+            a_inst = ('1')
+        if '@ARG' in snumber:
+            a_inst = ('2')
+        if '@THIS' in snumber:
+            a_inst = ('3')
+        if '@THAT' in snumber:
+            a_inst = ('4')
         a_inst = int(a_inst)
         a_inst= bin(a_inst+(1<<15))[3:]
 
     # C instukce
-    if '@' not in snumber:
+    elif '0' in snumber or '1' in snumber or 'A' in snumber or 'D' in snumber or 'M' in snumber or 'JGT' in snumber or 'JEQ' in snumber or 'JGE' in snumber or 'JLT' in snumber or 'JNE' in snumber or 'JLE' in snumber or 'JMP' in snumber:
         c_inst = snumber
 
 # Comp instrukce
-    if not snumber:
-        break
     if '0' in c_inst:
         comp = ('0101010')
     if '1' in c_inst:
@@ -39,7 +57,7 @@ while True:
         comp = ('0001100')    
     if 'A' in c_inst and not 'A=' in c_inst:
         comp = ('0110000')
-    if 'M' in c_inst and not 'M=' in c_inst:
+    if 'M' in c_inst and not 'M=' in c_inst and not 'JMP' in c_inst:
         comp = ('1110000')
     if '!D' in c_inst:
         comp = ('0001101')
