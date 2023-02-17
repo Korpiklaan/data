@@ -1,22 +1,34 @@
 # Přiřazeni proměné
-snumber = input()
 c_inst = ''
 a_inst = ''
 comp = ''
 dest = ''
 jump = ''
+a='111'
+n= '0'
 
-# A instukce
-if '@' in snumber:
-    a_inst = int(snumber[1:])
-    print(000,bin(a_inst)[2:],sep='')
+# Otevření assem souboru
+f2 = open('assem.hack', 'w')
+f1 = open('assem.asm', 'r')
+count = 0
 
-# C instukce
-if '@' not in snumber:
-    c_inst = snumber
+while True:
+    count += 1
+    snumber = f1.readline()
 
-# instrukce
-if c_inst == snumber:
+    # A instukce
+    if '@' in snumber:
+        a_inst = (snumber[1:])
+        a_inst = int(a_inst)
+        a_inst= bin(a_inst+(1<<15))[3:]
+
+    # C instukce
+    if '@' not in snumber:
+        c_inst = snumber
+
+# Comp instrukce
+    if not snumber:
+        break
     if '0' in c_inst:
         comp = ('0101010')
     if '1' in c_inst:
@@ -42,7 +54,7 @@ if c_inst == snumber:
     if '-M' in c_inst:
         comp = ('1110011')
     if 'D+1' in c_inst:
-        comp = ('1011111')
+        comp = ('0011111')
     if 'A+1' in c_inst:
         comp = ('0110111')
     if 'M+1' in c_inst:
@@ -73,43 +85,51 @@ if c_inst == snumber:
         comp = ('0010101')
     if 'D|M' in c_inst:
         comp = ('1010101')
-
-    # Destinace
+        
+# Destinace
     if 'M=' in c_inst:
         dest = ('001')
-    elif 'D=' in c_inst:
+    if 'D=' in c_inst:
         dest = ('010')
-    elif 'MD=' in c_inst:
+    if 'MD=' in c_inst:
         dest = ('011')
-    elif 'A=' in c_inst:
+    if 'A=' in c_inst:
         dest = ('100')
-    elif 'AM=' in c_inst:
+    if 'AM=' in c_inst:
         dest = ('101')
-    elif 'AD=' in c_inst:
+    if 'AD=' in c_inst:
         dest = ('110')
-    elif 'AMD=' in c_inst:
+    if 'AMD=' in c_inst:
         dest = ('111')
-
-    else:
+    if 'M=' not in c_inst and 'D=' not in c_inst and 'MD=' not in c_inst and 'A=' not in c_inst and 'AM' not in c_inst and 'AD' not in c_inst and 'AMD' not in c_inst:
         dest = ('000')
+
 
     # Jump
     if 'JGT' in c_inst:
         jump=('001')
-    elif 'JEQ' in c_inst:
+    if 'JEQ' in c_inst:
         jump=('010')
-    elif 'JGE' in c_inst:
+    if 'JGE' in c_inst:
         jump=('011')
-    elif 'JLT' in c_inst:
+    if 'JLT' in c_inst:
         jump=('100')
-    elif 'JNE' in c_inst:
+    if 'JNE' in c_inst:
         jump=('101')
-    elif 'JLE' in c_inst:
+    if 'JLE' in c_inst:
         jump=('110')
-    elif 'JMP' in c_inst:
+    if 'JMP' in c_inst: 
         jump=('111')
-    else:
+    if 'JGT' not in c_inst and 'JEQ' not in c_inst and 'JGE' not in c_inst and 'JLT' not in c_inst and 'JNE' not in c_inst and 'JLE' not in c_inst and 'JMP' not in c_inst:
         jump=('000')
 
-    print(111,comp,dest,jump,sep='')
-
+# Výběr jestli je načtená a nebo c instrukce + zapsání (\n) zapíše na novy rádek
+    if c_inst == snumber:
+        L=("{}\n".format(a+comp+dest+jump))
+    if c_inst != snumber:
+        L=("{}\n".format(n+a_inst))
+    
+    f2.writelines(L)
+    
+f1.close()
+f2.close()
