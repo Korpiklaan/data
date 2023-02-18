@@ -1,12 +1,33 @@
 # Přiřazeni proměné
-c_inst = ''
-a_inst = ''
-comp = ''
-dest = ''
-jump = ''
-a='111'
 n= '0'
 soubor = input()
+
+# Slovník pro comp
+comp_dict = {'0': '0101010', '1': '0111111', '-1': '0111010', 'D': '0001100', 'A': '0110000', 'M': '1110000', 
+             '!D': '0001101', '!A': '0110001', '!M': '1110001', '-D': '0001111', '-A': '0110011', '-M': '1110011', 
+             'D+1': '0011111', 'A+1': '0110111', 'M+1': '1110111', 'D-1': '0001110', 'A-1': '0110010', 
+             'M-1': '1110010', 'D+A': '0000010', 'D+M': '1000010', 'D-A': '0010011', 'D-M': '1010011', 
+             'A-D': '0000111', 'M-D': '1000111', 'D&A': '0000000', 'D&M': '1000000', 'D|A': '0010101', 
+             'D|M': '1010101'}
+# Slovník pro dest
+dest_dict = {'': '000','M': '001', 'D': '010', 'MD': '011', 'A': '100', 'AM': '101', 'AD': '110', 'AMD': '111'}
+
+# Slovník pro jump
+jump_dict = {'': '000','JGT': '001', 'JEQ': '010', 'JGE': '011', 'JLT': '100', 'JNE': '101', 'JLE': '110', 'JMP': '111'}
+
+def instrukce(c_inst):
+    comp = ""
+    dest = ""
+    jump = ""
+    if ";" in c_inst:
+        comp,jump=c_inst.split(";")
+    if "=" in c_inst:
+        dest,comp=c_inst.split("=")
+    comp = comp_dict.get(comp)
+    dest = dest_dict.get(dest)
+    jump = jump_dict.get(jump)
+    return ('111'+comp+dest+jump)
+
 # Otevření assem souboru
 
 f2 = open('{}.hack'.format(soubor), 'w')
@@ -15,7 +36,8 @@ count = 0
 
 while True:
     count += 1
-    snumber = f1.readline()
+    snumber = f1.readline().strip()
+    
     if not snumber:
         break
 
@@ -46,108 +68,13 @@ while True:
     elif '0' in snumber or '1' in snumber or 'A' in snumber or 'D' in snumber or 'M' in snumber or 'JGT' in snumber or 'JEQ' in snumber or 'JGE' in snumber or 'JLT' in snumber or 'JNE' in snumber or 'JLE' in snumber or 'JMP' in snumber:
         c_inst = snumber
 
-# Comp instrukce
-    if '0' in c_inst:
-        comp = ('0101010')
-    if '1' in c_inst:
-        comp = ('0111111')
-    if '-1' in c_inst:
-        comp = ('0111010')
-    if 'D' in c_inst and not 'D=' in c_inst:
-        comp = ('0001100')    
-    if 'A' in c_inst and not 'A=' in c_inst:
-        comp = ('0110000')
-    if 'M' in c_inst and not 'M=' in c_inst and not 'JMP' in c_inst:
-        comp = ('1110000')
-    if '!D' in c_inst:
-        comp = ('0001101')
-    if '!A' in c_inst:
-        comp = ('0110001')
-    if '!M' in c_inst:
-        comp = ('1110001')
-    if '-D' in c_inst:
-        comp = ('0001111')
-    if '-A' in c_inst:
-        comp = ('0110011')
-    if '-M' in c_inst:
-        comp = ('1110011')
-    if 'D+1' in c_inst:
-        comp = ('0011111')
-    if 'A+1' in c_inst:
-        comp = ('0110111')
-    if 'M+1' in c_inst:
-        comp = ('1110111')
-    if 'D-1' in c_inst:
-        comp = ('0001110')
-    if 'A-1' in c_inst:
-        comp = ('0110010')
-    if 'M-1' in c_inst:
-        comp = ('1110010')
-    if 'D+A' in c_inst:
-        comp = ('0000010')
-    if 'D+M' in c_inst:
-        comp = ('1000010')
-    if 'D-A' in c_inst:
-        comp = ('0010011')
-    if 'D-M' in c_inst:
-        comp = ('1010011')
-    if 'A-D' in c_inst:
-        comp = ('0000111')
-    if 'M-D' in c_inst:
-        comp = ('1000111')
-    if 'D&A' in c_inst:
-        comp = ('0000000')
-    if 'D&M' in c_inst:
-        comp = ('1000000')    
-    if 'D|A' in c_inst:
-        comp = ('0010101')
-    if 'D|M' in c_inst:
-        comp = ('1010101')
-        
-# Destinace
-    if 'M=' in c_inst:
-        dest = ('001')
-    if 'D=' in c_inst:
-        dest = ('010')
-    if 'MD=' in c_inst:
-        dest = ('011')
-    if 'A=' in c_inst:
-        dest = ('100')
-    if 'AM=' in c_inst:
-        dest = ('101')
-    if 'AD=' in c_inst:
-        dest = ('110')
-    if 'AMD=' in c_inst:
-        dest = ('111')
-    if 'M=' not in c_inst and 'D=' not in c_inst and 'MD=' not in c_inst and 'A=' not in c_inst and 'AM' not in c_inst and 'AD' not in c_inst and 'AMD' not in c_inst:
-        dest = ('000')
-
-
-    # Jump
-    if 'JGT' in c_inst:
-        jump=('001')
-    if 'JEQ' in c_inst:
-        jump=('010')
-    if 'JGE' in c_inst:
-        jump=('011')
-    if 'JLT' in c_inst:
-        jump=('100')
-    if 'JNE' in c_inst:
-        jump=('101')
-    if 'JLE' in c_inst:
-        jump=('110')
-    if 'JMP' in c_inst: 
-        jump=('111')
-    if 'JGT' not in c_inst and 'JEQ' not in c_inst and 'JGE' not in c_inst and 'JLT' not in c_inst and 'JNE' not in c_inst and 'JLE' not in c_inst and 'JMP' not in c_inst:
-        jump=('000')
-
 # Výběr jestli je načtená a nebo c instrukce + zapsání (\n) zapíše na novy rádek
     if c_inst == snumber:
-        L=("{}\n".format(a+comp+dest+jump))
+        L=((f"{instrukce(c_inst)}\n"))
     if c_inst != snumber:
         L=("{}\n".format(n+a_inst))
     
     f2.writelines(L)
-    
+
 f1.close()
 f2.close()
